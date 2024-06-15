@@ -1,0 +1,54 @@
+run:
+  timeout: 5m
+
+linters:
+  disable-all: true
+  enable:
+    - asciicheck
+    - bidichk
+    - copyloopvar
+    - dogsled
+    - durationcheck
+    - errcheck
+    - errorlint
+    - exportloopref
+    - gci
+    - gocheckcompilerdirectives
+    - gochecknoglobals
+    - goconst
+    - gofmt
+    - gofumpt
+    - goimports
+    - gosec
+    - gosimple
+    - govet
+    - grouper
+    - inamedparam
+    - ineffassign
+    - intrange
+    - mnd
+    - nakedret
+    - nilerr
+    - nilnil
+    - nlreturn
+    - nolintlint
+    - nonamedreturns
+    - prealloc
+    - reassign
+    - revive
+    - sloglint
+    - staticcheck
+    - testableexamples
+    - testpackage
+    - thelper
+    - unconvert
+    - unparam
+    - unused
+    - wastedassign
+    - whitespace
+
+linters-settings:
+  gofmt:
+    simplify: false
+  unparam:
+    check-exported: true

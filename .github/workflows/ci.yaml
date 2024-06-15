@@ -1,0 +1,84 @@
+name: CI
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+env:
+  GITHUB_CONTEXT: ${{ toJson(github) }}
+
+jobs:
+  lint:
+    name: 🎨 Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⏬ Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          check-latest: true
+
+      - name: 🎨 golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.59
+          args: --verbose
+
+  test:
+    name: 🚨 Test
+    strategy:
+      matrix:
+        # version: [stable, oldstable]
+        version: [stable]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: ⏬ Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.version }}
+          check-latest: true
+
+      - name: 🚨 Test
+        run: go test ./... -cover -covermode count
+
+  coverage:
+    name: 🚀 Deploy Coverage
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⏬ Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          check-latest: true
+
+      - name: 🚨 Generate Coverage
+        run: |
+          mkdir .coverage
+          go test ./... -covermode count -coverprofile=".coverage/coverage.out"
+          go tool cover -html ".coverage/coverage.out" -o ".coverage/index.html"
+
+      - name: 🗑️ Remove .gitignore
+        run: find . -type f -name .gitignore -exec rm {} \;
+
+      - name: 🚀 Deploy Coverage
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: .coverage
