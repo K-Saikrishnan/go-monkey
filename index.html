@@ -352,12 +352,12 @@ var keywords = map[string]Type{ //nolint:gochecknoglobals
         "return": RETURN,
 }
 
-func LookupIdent(ident string) Type <span class="cov10" title="22">{
-        if tok, ok := keywords[ident]; ok </span><span class="cov7" title="11">{
+func LookupIdent(ident string) Type <span class="cov10" title="9">{
+        if tok, ok := keywords[ident]; ok </span><span class="cov8" title="7">{
                 return tok
         }</span>
 
-        <span class="cov7" title="11">return IDENT</span>
+        <span class="cov3" title="2">return IDENT</span>
 }
 </pre>
 		
